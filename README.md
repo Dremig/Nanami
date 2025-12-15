@@ -7,9 +7,9 @@ Still Under Development...
 ### basic
 
 + [ ] Website Building
-+ [ ] file / exiftool
-+ [ ] strings
-+ [ ] pngcheck for png
++ [x] file / exiftool
++ [x] strings
++ [x] pngcheck for png
 + [ ] binwalk / foremost
 + [ ] stegsolve(view bit plane)
 + [ ] zsteg(LSB extract)

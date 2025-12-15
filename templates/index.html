@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隐写分析工具</title>
+    <!-- 引入 Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .upload-card { margin-top: 100px; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 upload-card text-center">
+            <h2 class="mb-4">🖼️ 图片隐写分析系统</h2>
+            <p class="text-muted mb-4">上传一张 JPG 图片，系统将自动分析其中是否隐藏了秘密信息。</p>
+
+            <!-- 错误消息闪现 -->
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="alert alert-danger">
+                  {{ messages[0] }}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <form action="/analyze" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input class="form-control form-control-lg" type="file" name="file" accept=".jpg,.jpeg,.png" required>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">开始分析 🚀</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
