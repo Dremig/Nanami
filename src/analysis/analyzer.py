@@ -66,6 +66,13 @@ def stego_analysis(image_path):
             pngcheck_result = pngcheck(image_path)
             print(f"pngcheck result: {pngcheck_result}")
             analysis_results['pngcheck'] = pngcheck_result
+        strings_result = strings(image_path)
+        analysis_results['strings'] = strings_result
+        return analysis_results
+    elif not file_success:
+        print("file command failed, skipping further analysis.")
+    else:
+        print("not an image file, skipping further analysis.")
         
 
 

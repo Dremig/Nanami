@@ -15,11 +15,18 @@ Still Under Development...
 + [ ] zsteg(LSB extract)
 + [ ] steghide
 + [ ] outguess
-
++ [ ] resize detection
++ [ ] add a function to change its width / height
++ [ ] file not image, rebuild it to image by add magic number
 
 ### advanced
 
 + [ ] F5
 + [ ] zlib
-+ [ ] palette
++ [ ] palette stego
 + [ ] **mcp**
+
+## Some thoughts
+
++ [ ] will I need to add a page to let users select the type(s) of stego?
++ [ ] how can mcp be implemented in this program?
