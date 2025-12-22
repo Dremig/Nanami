@@ -12,12 +12,12 @@ Still Under Development...
 + [x] pngcheck for png
 + [ ] binwalk / foremost
 + [ ] stegsolve(view bit plane)
-+ [ ] zsteg(LSB extract)
++ [x] zsteg(LSB extract)
 + [ ] steghide
 + [ ] outguess
 + [ ] resize detection
 + [ ] add a function to change its width / height
-+ [ ] file not image, rebuild it to image by add magic number
++ [x] file not image, rebuild it to image by add magic number
 
 ### advanced
 

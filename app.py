@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
-from src.analyzer import stego_analysis
+from src.analysis import Analysis
 
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session" 
@@ -23,29 +23,8 @@ def index():
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    if 'file' not in request.files:
-        flash('no file detected')
-        return redirect(url_for('index'))
+    pass
     
-    file = request.files['file']
-    if file.filename == '':
-        flash('no selected file')
-        return redirect(url_for('index'))
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        
-        try:
-            analysis_result = stego_analysis(file_path)
-            return render_template('result.html', result=analysis_result)
-        
-        except Exception as e:
-            flash(f"an error occurred during analysis: {str(e)}")
-            return redirect(url_for('index'))
-    else:
-        flash('file type not allowed')
-        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')
