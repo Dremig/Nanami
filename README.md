@@ -6,6 +6,7 @@ Still Under Development...
 
 ### basic
 
++ [ ] cli
 + [ ] Website Building
 + [x] file / exiftool
 + [x] strings
@@ -13,7 +14,7 @@ Still Under Development...
 + [ ] binwalk / foremost
 + [ ] stegsolve(view bit plane)
 + [x] zsteg(LSB extract)
-+ [ ] steghide
++ [x] steghide
 + [ ] outguess
 + [ ] resize detection
 + [ ] add a function to change its width / height

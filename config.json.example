@@ -1,0 +1,7 @@
+{
+    "paths": {
+        "temp_folder": "temp",
+        "upload_folder": "uploads",
+        "output_folder": "output"
+    }
+}
