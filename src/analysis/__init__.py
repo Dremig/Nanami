@@ -6,10 +6,20 @@ import binascii
 logger = logging.getLogger(__name__)
 
 class Analysis:
-    def __init__(self, path : str, tools_lists: dict, deep: bool = False):
+
+
+    JPG_POTENTIAL_FLAGS = ["4a46494600", "4578696600", "ffdb004300"]
+    PNG_POTENTIAL_FLAGS = ["49484452", "49444154", "74455874", "7a545874", "70485973", "504c5445"]
+    GIF_POTENTIAL_FLAGS = ["383961", "383761"]
+    def __init__(self, path : str, tools_lists: dict, deep: bool = False, 
+                 potential_passwd: str = None, output_path: str = None):
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Path does not exist: {path}")
         self.path = path
         self.tools_lists = tools_lists
         self.deep = deep
+        self.potential_passwd = potential_passwd
+        self.output_path = output_path
 
     def file(self):
         '''
@@ -31,9 +41,7 @@ class Analysis:
         '''
         Deep Analysis in file format using some flags
         '''
-        JPG_POTENTIAL_FLAGS = ["4a46494600", "4578696600", "ffdb004300"]
-        PNG_POTENTIAL_FLAGS = ["49484452", "49444154", "74455874", "7a545874", "70485973", "504c5445"]
-        GIF_POTENTIAL_FLAGS = ["383961", "383761"]
+
         with open(self.path, 'rb') as f:
             file_content = binascii.hexlify(f.read())
         if any(flag in file_content for flag in JPG_POTENTIAL_FLAGS) or file_content.endswith('ffd9'):
@@ -58,10 +66,10 @@ class Analysis:
         if os.path.exists(self.path):
             result = subprocess.run([pngcheck_cmd,'-7cpqstvx' , self.path], capture_output=True, text=True)
             if result.returncode == 0:
-                return result.stdout.strip()
+                return result.stdout.strip(), True
             else:
-                return result.stderr.strip()
-        return "File not found."
+                return result.stderr.strip(), False
+        return "File not found.", False
 
     def exiftool(self):
         '''
@@ -74,25 +82,25 @@ class Analysis:
         if os.path.exists(self.path):
             result = subprocess.run([exiftool_cmd, self.path], capture_output=True, text=True)
             if result.returncode == 0:
-                return result.stdout.strip()
+                return result.stdout.strip(), True
             else:
-                return result.stderr.strip()
-        return "File not found."
+                return result.stderr.strip(), False
+        return "File not found.", False
 
     def strings(self):
         '''
         strings command wrapper
         '''
         if not os.path.exists(self.path):
-            return "File not found."
+            return "File not found.", False
         strings_cmd = self.tools_lists["strings"]
         if os.path.exists(self.path):
             result = subprocess.run([strings_cmd, self.path], capture_output=True, text=True)
             if result.returncode == 0:
-                return result.stdout.strip()
+                return result.stdout.strip(), True
             else:
-                return result.stderr.strip()
-        return "File not found."
+                return result.stderr.strip(), False
+        return "File not found.", False
 
 
     def zsteg(self):
@@ -115,6 +123,23 @@ class Analysis:
                 return result.stderr.strip(), False
         return "File not found.", False
     
-    # def 
+    def steghide(self):
+        '''
+        steghide command wrapper
+        '''
+        if not self.tools_lists["steghide"]:
+            logger.debug("steghide command not found")
+            return "steghide command not found", False
+        steghide_cmd = self.tools_lists["steghide"]
+        temp_output = os.path.join(self.output_path, "steghide_output")
+        if os.path.exists(self.path): 
+            if self.potential_passwd:
+                result = subprocess.run([steghide_cmd, 'extract', '-sf', self.path, '-p', self.potential_passwd, '-xf', temp_output], capture_output=True, text=True)
+            else:
+                result = subprocess.run([steghide_cmd, 'extract', '-sf', self.path, '-xf', temp_output], capture_output=True, text=True)
+            if result.returncode == 0:
+                return result.stdout.strip(), True
+            else:
+                return result.stderr.strip(), False
     
 
