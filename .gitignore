@@ -1,3 +1,6 @@
 .DS_Store
 results
 uploads
+output
+config.json
+temp
