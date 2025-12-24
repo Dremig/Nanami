@@ -1,10 +1,10 @@
 import os
 import subprocess
-import logging
 import binascii
+from ..logger import ColoredLogger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+logger = ColoredLogger()
 
 class Analysis:
     JPG_POTENTIAL_FLAGS = ["4a46494600", "4578696600", "ffdb004300"]

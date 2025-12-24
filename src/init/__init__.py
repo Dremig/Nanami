@@ -1,10 +1,9 @@
 import json
 import os
-import logging
+from ..logger import ColoredLogger
 import shutil
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = ColoredLogger()
 
 
 class Init:

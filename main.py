@@ -1,10 +1,10 @@
 import os
 from src.analysis import Analysis
 from src.init import Init
-import logging
+import src.logger as Logger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = Logger.ColoredLogger()
+
 
 
 if __name__ == '__main__':
