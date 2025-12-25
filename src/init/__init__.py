@@ -41,14 +41,17 @@ class Init:
         
     def examine_tools(self):
         essential_tools = self.essential_tools
+        exact_essential_tools = {}
         for tool in essential_tools:
             if shutil.which(tool) is None:
                 logger.error(f"Essential tool {tool} is not available")
-                return None
+                return None, None
+            exact_essential_tools[tool] = shutil.which(tool)
         available_tools = self.available_tools
-        exact_available_tools = []
+        exact_available_tools = {}
         for tool in available_tools:
             if shutil.which(tool) is not None:
-                exact_available_tools.append(tool)
+                exact_available_tools[tool] = shutil.which(tool)
+        print(exact_essential_tools)
 
-        return exact_available_tools
+        return exact_available_tools, exact_essential_tools

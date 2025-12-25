@@ -10,7 +10,7 @@ class Analysis:
     JPG_POTENTIAL_FLAGS = ["4a46494600", "4578696600", "ffdb004300"]
     PNG_POTENTIAL_FLAGS = ["49484452", "49444154", "74455874", "7a545874", "70485973", "504c5445"]
     GIF_POTENTIAL_FLAGS = ["383961", "383761"]
-    def __init__(self, path : str, tools_lists : dict, use_lists : list,
+    def __init__(self, path : str, tools_lists : dict,
                 deep: bool = False, potential_passwd: str = None, 
                 output_path: str = None):
         if not os.path.exists(path):
@@ -20,7 +20,6 @@ class Analysis:
         self.deep = deep
         self.potential_passwd = potential_passwd
         self.output_path = output_path
-        self.use_lists = use_lists
 
     def file(self):
         '''
@@ -155,6 +154,8 @@ class Analysis:
         the full chain of analysis
         '''
         file_message, file_success = self.file()
+        # print(file_message)
+        file_message = file_message.lower()
         if file_success:
             if "png" in file_message:
                 pngcheck_message, pngcheck_success = self.pngcheck()
@@ -181,7 +182,8 @@ class Analysis:
                 if tool == "strings":
                     strings_message, strings_success = self.strings()
                     if strings_success:
-                        logger.info("strings result:\n %s", strings_message)
+                        logger.info("strings result:\n")
+                        print(strings_message)
                     else:
                         logger.error("strings fail with message : %s", strings_message)
                 elif tool == "zsteg":
