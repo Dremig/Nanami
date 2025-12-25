@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # for file in os.listdir(upload_path):
     if os.listdir(upload_path):
         if len(os.listdir(upload_path)) > 1:
-            logger.warning("I'm so sorry, but currently Nanami can only analyze one file at a time.")
+            logger.warning("I'm sorry, but currently Nanami can only analyze one file at a time.")
             exit(0)
     else:
         logger.warning("It seems that you haven't uploaded any files yet, please upload a file first.")
@@ -44,13 +44,12 @@ if __name__ == '__main__':
     available_tools.update(essential_tools)
     logger.info('Will you want to deep analyze this file? This will take more time .(y/N)')
     choice = input()
+    logger.info
     if choice.lower() == 'y' or choice.lower() == 'yes':
         deep = True
     else:
         deep = False
     analysis = Analysis(path = file_path, tools_lists = available_tools, deep=deep, output_path=output_path)
 
-    
-    
     # analysis = Analysis()
     analysis.main_logic()

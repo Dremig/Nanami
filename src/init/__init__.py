@@ -8,10 +8,10 @@ logger = ColoredLogger()
 
 class Init:
     essential_tools = [
-        'file', 'exiftool'    
+        'file', 'exiftool' , 'pngcheck'
     ]
     available_tools = [
-        'strings', 'steghide', 'pngcheck'
+        'strings', 'steghide', 'zsteg'
     ]
     def __init__(self, config_path):
         self.config_path = config_path

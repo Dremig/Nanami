@@ -6,7 +6,7 @@ Still Under Development...
 
 ### basic
 
-+ [ ] cli
++ [x] cli
 + [ ] Website Building
 + [x] file / exiftool
 + [x] strings
@@ -18,7 +18,7 @@ Still Under Development...
 + [ ] outguess
 + [ ] resize detection
 + [ ] add a function to change its width / height
-+ [x] file not image, rebuild it to image by add magic number
++ [x] file not image, try to rebuild it to image by add magic number
 
 ### advanced
 

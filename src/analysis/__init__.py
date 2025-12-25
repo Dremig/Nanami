@@ -64,7 +64,7 @@ class Analysis:
             return "pngcheck command not found", False
         pngcheck_cmd = self.tools_lists["pngcheck"]
         if os.path.exists(self.path):
-            result = subprocess.run([pngcheck_cmd,'-7cpqstvx' , self.path], capture_output=True, text=True)
+            result = subprocess.run([pngcheck_cmd, self.path], capture_output=True, text=True)
             if result.returncode == 0:
                 return result.stdout.strip(), True
             else:
@@ -115,20 +115,49 @@ class Analysis:
         if not self.tools_lists["zsteg"]:
             logger.debug("zsteg command not found")
             return "zsteg command not found", False
+        
         zsteg_cmd = self.tools_lists["zsteg"]
         zsteg_file = os.path.join(self.output_path, "zsteg_output")
-        if os.path.exists(self.path):
+        
+        if not os.path.exists(self.path):
+            return "File not found.", False
+        
+        try: 
             if self.deep:
-                result = subprocess.run([zsteg_cmd, '-a', self.path], capture_output=True, text=True)
+                result = subprocess.run([zsteg_cmd, '-a', self.path], capture_output=True)
             else:
-                result = subprocess.run([zsteg_cmd, self.path], capture_output=True, text=True)
+                result = subprocess.run([zsteg_cmd, self.path], capture_output=True)
+
+            decoded_output = None
+            decoded_error = None
+
+            try:
+                decoded_output = result.stdout.decode('utf-8').strip()
+            except UnicodeDecodeError:
+                try:
+                    decoded_output = result.stdout.decode('latin-1').strip()
+                except UnicodeDecodeError:
+                    decoded_output = result.stdout.decode('utf-8', errors='ignore').strip()
+
+            try:
+                decoded_error = result.stderr.decode('utf-8').strip()
+            except UnicodeDecodeError:
+                try:
+                    decoded_error = result.stderr.decode('latin-1').strip()
+                except UnicodeDecodeError:
+                    decoded_error = result.stderr.decode('utf-8', errors='ignore').strip()
+
+            with open(zsteg_file, 'w', encoding='utf-8', errors='ignore') as f:
+                f.write(decoded_output)
+
             if result.returncode == 0:
-                with open(zsteg_file, 'w') as f:
-                    f.write(result.stdout.strip())
-                return result.stdout.strip(), True
+                return decoded_output, True
             else:
-                return result.stderr.strip(), False
-        return "File not found.", False
+                return decoded_error if decoded_error else "fail to execute zsteg", False
+                
+        except Exception as e:
+            logger.error(f"zsteg faild with error: {str(e)}")
+            return f"zsteg failed with error: {str(e)}", False
     
     def steghide(self):
         '''
@@ -160,7 +189,8 @@ class Analysis:
             if "png" in file_message:
                 pngcheck_message, pngcheck_success = self.pngcheck()
                 if pngcheck_success:
-                    logger.info("pngcheck result: %s", pngcheck_message)
+                    logger.info("pngcheck result : ")
+                    print(pngcheck_message)
             elif not ("png" or "jpeg" or "gif") in file_message:
                 if self.deep:
                     type, found = self.deep_file()
@@ -172,32 +202,37 @@ class Analysis:
                 else:
                     logger.debug("File type not unknown, skip analysis")
                     return
+            # return 0
             
             exiftool_message, exiftool_success = self.exiftool()
             if exiftool_success:
-                logger.info("exiftool result: %s", exiftool_message)
+                logger.info("exiftool result : ")
+                print(exiftool_message)
             else:
-                logger.error("exiftool fail with message : %s", exiftool_message)
+                logger.error("exiftool fail with message : ")
+                print(exiftool_message)
             for tool in self.tools_lists:
                 if tool == "strings":
                     strings_message, strings_success = self.strings()
                     if strings_success:
-                        logger.info("strings result:\n")
-                        print(strings_message)
+                        logger.info("strings result : ")
                     else:
-                        logger.error("strings fail with message : %s", strings_message)
+                        logger.error("strings fail with message : ")
+                    print(strings_message)
                 elif tool == "zsteg":
                     zsteg_message, zsteg_success = self.zsteg()
                     if zsteg_success:
-                        logger.info("zsteg result:\n %s", zsteg_message)
+                        logger.info("zsteg result : ")
                     else:
-                        logger.error("zsteg fail with message : %s", zsteg_message)
+                        logger.error("zsteg fail with message : ")
+                    print(zsteg_message)    
                 elif tool == "steghide":
                     steghide_message, steghide_success = self.steghide()
                     if steghide_success:
-                        logger.info("steghide result:\n %s", steghide_message)
+                        logger.info("steghide result : ")
                     else:
-                        logger.error("steghide fail with message : %s", steghide_message)
+                        logger.error("steghide fail with message : ")
+                    print(steghide_message)
         else:
             logger.error("file fail with message : %s, the following steps will be skipped", file_message)
     
